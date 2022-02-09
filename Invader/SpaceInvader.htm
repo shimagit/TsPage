@@ -10,6 +10,8 @@ var ctx, ship, beam, shots = [], aliens = [], bombs = [],
 function Beam() {
     this.x = 0;
     this.y = -100;
+    this.count = this.maxCount;
+    this.maxCount = 40;
     this.offset = 0;
     this.even = false;
     this.isEven = function () { return this.even; }
@@ -76,6 +78,10 @@ function init() {
     ctx.font = "20pt Arial";
     score = 0, stage = 1;
 
+    for (var i = 0; i < 7; i++) {
+        shots.push(new Shot());
+    }
+
     addEventListener('keydown', keyDown, true);
     addEventListener('keyup', keyUp, true);
 
@@ -94,8 +100,25 @@ function start() {
             aliens.push(new Alien(100 + j*50, i*50 + 50*stage, (4 - i) * 10, offset));
         }
         bombs.push(new Bomb());
-        shots.push(new Shot());
     }
+
+    //弾丸の位置を更新
+    var fire = false;
+        shots.forEach(function(shot) {
+            if (shots.count < shot.maxCount) {
+                shot.count++;
+                shot.update()
+                //衝突検出
+                var hit = -1, r=NaN;
+                aliens.forEach(function (e, i) {
+                if (e.x - 15 < shot.x && shot.x < e.x + 15 &&
+                    e.y - 10 < shot.y && shot.y < e.y + 20) {
+                    hit = i; shot.y = -100; score += e.point;
+                    return;
+                    }
+                })
+            }
+        });
 
     if (isNaN(alienT)) {
         alienT = setTimeout(alienLoop, Alien.interval);
@@ -112,10 +135,11 @@ function keyDown(evt) {
         beam.y = 520; beam.x = ship.x;
     }
     if (evt.keyCode == 16) {
-        shots.forEach(function(s) {
-            s.y = 520; s.x = ship.x;
-        });
-    }}
+        shot.count = 0;
+        shot.x = ship.x;
+        shot.y = 520;
+        fire = true;
+    }};
 
 function keyUp(evt) {
     if (evt.keyCode == 37) ship.moveL = false;
@@ -198,34 +222,7 @@ function mainLoop() {
         }
     }
 
-    // update shot and check if it hits an alien
-    shots.forEach(function(s) {
-        var hit = -1;
-        if (s.y > -30) {
-            s.y -= 15;
-            s.even = !shot.even;
-            aliens.forEach(function (e, i) {
-                if (e.x - 15 < s.x && s.x < e.x + 15 &&
-                    e.y - 10 < s.y && s.y < e.y + 20) {
-                    hit = i; shot.y = -100; score += e.point;
-                    return;
-                }
-            });
-        }
-        if (hit >= 0) {
-            aliens.splice(hit, 1);
-        
-
-            // stage clear
-            if (aliens.length == 0) {
-                clock = 0;
-                draw();
-                return;
-            }
-        }
-    });
-
-    // update bombs and check if it hits the ship
+     // update bombs and check if it hits the ship
     bombs.forEach(function (b) {
         if (b.time < clock) {
             var a = aliens[rand(aliens.length)];
@@ -264,7 +261,11 @@ function draw() {
     beam.draw(ctx);
 
     // draw shots
-    shots.forEach(function (s) { s.draw(ctx); });
+    shots.forEach(function (shot) {
+        if (shots.count < shot.maxCount) {
+            ctx.fillRect(shot.getX(), shot.getY(), shot.w, shot.h);
+        }
+    });
 
     // draw bombs
     bombs.forEach(function (b) { b.draw(ctx); });
