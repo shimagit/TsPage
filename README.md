@@ -1,2 +1,3 @@
-// javascropt学習用
-// 1.invaderを連射できるように改造する
+# TsPage
+  JavaScript勉強用のページ
+  ＊Step1 "Invader"ゲームを連射可能に改造する。
