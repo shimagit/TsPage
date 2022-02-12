@@ -130,20 +130,12 @@ function start() {
 function keyDown(evt) {
     if (ship.keyL) ship.moveL = true;
     if (ship.keyR) ship.moveR = true;
-    if (ship.keyH && beam.y < 0) {
-        beam.y = 520; beam.x = ship.x;
-    }
-    if (evt.keyCode == 16) {
-        shot.count = 0;
-        shot.x = ship.x;
-        shot.y = 520;
-        fire = true;
-    }};
+};
 
 function keyUp(evt) {
     if (evt.keyCode == 37) ship.moveL = false;
     if (evt.keyCode == 39) ship.moveR = false;
-}
+};
 
  function alienLoop() {
 //     var minX = Infinity, maxX = 0, maxY = 0;
@@ -261,7 +253,7 @@ function mainLoop() {
                     }
                 })
             }
-            else if (!fire && ship.keyH && (shotInterval <= 0 ) )  {
+            else if (!fire && ship.keyH && shotInterval <= 0 )  {
                 shot   .count = 0;
                 shot.x = ship.x;
                 shot.y = ship.y;
