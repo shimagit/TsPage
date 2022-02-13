@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <script type="text/javascript">
     "use strict";
-var ctx, ship, shots = [], aliens = [], bombs = [],
+var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
     shotInterval = 0 ;
 
@@ -43,6 +43,13 @@ function Ship() {
     this.isEven = function () { return true; }
 }
 
+function Ufo() {
+    this.x = 600;
+    this.y = 30;
+    this.offset = 192;
+    this.point = 300;
+    this.isEven = function () { return true; }
+}
 var bitmap = {
     draw: function (ctx) {
         if (!this.strip) {
@@ -54,7 +61,8 @@ var bitmap = {
     }
 }
 
-Ship.prototype = Alien.prototype = Bomb.prototype = Shot.prototype = bitmap;
+Ship.prototype = Alien.prototype = Bomb.prototype =
+Shot.prototype = Ufo.prototype = bitmap;
 
 Alien.isEven = false;
 Alien.isDown = false;
@@ -95,6 +103,8 @@ function init() {
 
 function start() {
     ship = new Ship();
+    ufo = new Ufo();
+
     clock = 0;
     Alien.interval = 1000 - stage * 50;
 
@@ -182,7 +192,7 @@ function mainLoop() {
             b.time += rand(200) + 50;
         }
         else if (b.y < 600) {
-            b.y += 10
+            b.y += 10;
         }
 
         b.even = !b.even;
@@ -191,6 +201,19 @@ function mainLoop() {
         }
     });
 
+    // UFO Exist & Move
+    if (ufo.x < 600) {
+        if (ufo.x <= 0 ) {
+            ufo.x = 600;
+        }
+        else {
+            ufo.x -= 5;
+        }
+    }
+    else if (rand(50) == 0 ) {
+        ufo.x = 590;
+    }
+
     // move the ship
     if (ship.keyR) { ship.x = Math.min(ship.x + 5, 570); }
     if (ship.keyL) { ship.x = Math.max(ship.x - 5, 0); }
@@ -198,11 +221,11 @@ function mainLoop() {
     shotInterval--;
 
      //弾丸の位置を更新
-     var fire = false, hit = -1;
+     var fire = false, hit = -1, hitUfo = -1;
         shots.forEach(function(shot) {
             if (shot.count < shot.maxCount) {
                 shot.count++;
-                shot.y -= 10;
+                shot.y -= 20;
                 //衝突検出
                 var r=NaN;
                 aliens.forEach(function (e, i) {
@@ -212,6 +235,12 @@ function mainLoop() {
                     return;
                     }
                 })
+                if (ufo.x - 15 < shot.x && shot.x < ufo.x + 15 &&
+                    ufo.y - 10 < shot.y && shot.y < ufo.y + 20) {
+                    hitUfo = 1; shot.y = -100; score += ufo.point;
+                    ufo.x = 600;
+                    return;
+                    }
             }
             else if (!fire && ship.keyH && shotInterval <= 0 )  {
                 shot   .count = 0;
@@ -255,6 +284,9 @@ function draw() {
 
     // draw bombs
     bombs.forEach(function (b) { b.draw(ctx); });
+
+    // draw ufo
+    ufo.draw(ctx);
 
     // draw score
     ctx.fillStyle = 'rgb(0,255,0)';
