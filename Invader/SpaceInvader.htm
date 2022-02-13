@@ -99,9 +99,6 @@ function init() {
         }
     });
 
-    // addEventListener('keydown', keyDown, true);
-    // addEventListener('keyup', keyUp, true);
-
     start();
 }
 
@@ -111,13 +108,13 @@ function start() {
     clock = 0;
     Alien.interval = 1000 - stage * 50;
 
-    // for (var i = 0 ; i < 4 ; i++) {
-    //     var offset = (i < 2) ? 96 : 144;
-    //     for (var j = 0 ; j < 10 ; j++) {
-    //         aliens.push(new Alien(100 + j*50, i*50 + 50*stage, (4 - i) * 10, offset));
-    //     }
-    //     bombs.push(new Bomb());
-    // }
+    for (var i = 0 ; i < 4 ; i++) {
+        var offset = (i < 2) ? 96 : 144;
+        for (var j = 0 ; j < 10 ; j++) {
+            aliens.push(new Alien(100 + j*50, i*50 + 50*stage, (4 - i) * 10, offset));
+        }
+        bombs.push(new Bomb());
+    }
 
      if (isNaN(alienT)) {
          alienT = setTimeout(alienLoop, Alien.interval);
@@ -138,38 +135,38 @@ function keyUp(evt) {
 };
 
  function alienLoop() {
-//     var minX = Infinity, maxX = 0, maxY = 0;
+    var minX = Infinity, maxX = 0, maxY = 0;
 
-//     Alien.isEven = !Alien.isEven;
+    Alien.isEven = !Alien.isEven;
 
-//     // update aliens' position
-//     aliens.forEach(function (e) {
-//         e.x += Alien.isDown ? 0 : (Alien.isLeft ? -10 : 10);
-//         e.y += Alien.isDown ? 20 : 0;
-//     });
+    // update aliens' position
+    aliens.forEach(function (e) {
+        e.x += Alien.isDown ? 0 : (Alien.isLeft ? -10 : 10);
+        e.y += Alien.isDown ? 20 : 0;
+    });
 
-//     aliens.forEach(function (e) {
-//         minX = Math.min(minX, e.x);
-//         maxX = Math.max(maxX, e.x);
-//         maxY = Math.max(maxY, e.y);
-//     });
+    aliens.forEach(function (e) {
+        minX = Math.min(minX, e.x);
+        maxX = Math.max(maxX, e.x);
+        maxY = Math.max(maxY, e.y);
+    });
 
-//     if (Alien.isDown) {
-//         Alien.isDown = false;
-//     } else if (minX < 20) {
-//         Alien.isDown = true;
-//         Alien.isLeft = false;
-//     } else if (maxX > 560) {
-//         Alien.isDown = true;
-//         Alien.isLeft = true;
-//     }
+    if (Alien.isDown) {
+        Alien.isDown = false;
+    } else if (minX < 20) {
+        Alien.isDown = true;
+        Alien.isLeft = false;
+    } else if (maxX > 560) {
+        Alien.isDown = true;
+        Alien.isLeft = true;
+    }
 
-//     if (maxY > 550) {
-//         gameOver();
-//     } else {
-//         Alien.interval = Math.max(50, Alien.interval - 5);
-//         setTimeout(alienLoop, Alien.interval);
-//     }
+    if (maxY > 550) {
+        gameOver();
+    } else {
+        Alien.interval = Math.max(50, Alien.interval - 5);
+        setTimeout(alienLoop, Alien.interval);
+    }
  }
 
 function gameOver() {
@@ -180,7 +177,7 @@ function gameOver() {
 
 function mainLoop() {
     clock++;
-    aliens.length = 1; // debug
+    //aliens.length = 1; // debug
     
     if (aliens.length == 0) {
         if (clock > 100) {
@@ -238,13 +235,13 @@ function mainLoop() {
     shotInterval--;
 
      //弾丸の位置を更新
-     var fire = false;
+     var fire = false, hit = -1;
         shots.forEach(function(shot) {
             if (shot.count < shot.maxCount) {
                 shot.count++;
                 shot.y -= 10;
                 //衝突検出
-                var hit = -1, r=NaN;
+                var r=NaN;
                 aliens.forEach(function (e, i) {
                 if (e.x - 15 < shot.x && shot.x < e.x + 15 &&
                     e.y - 10 < shot.y && shot.y < e.y + 20) {
@@ -262,6 +259,16 @@ function mainLoop() {
             }
         });
 
+          if (hit >= 0) {
+        aliens.splice(hit, 1);
+
+       // stage clear
+       if (aliens.length == 0) {
+            clock = 0;
+            draw();
+            return;
+        }
+    }
     draw();
 }
 
