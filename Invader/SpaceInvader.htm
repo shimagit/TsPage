@@ -4,17 +4,9 @@
     <meta charset="utf-8" />
     <script type="text/javascript">
     "use strict";
-var ctx, ship, beam, shots = [], aliens = [], bombs = [],
+var ctx, ship, shots = [], aliens = [], bombs = [],
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
     shotInterval = 0 ;
-
-function Beam() {
-    this.x = 0;
-    this.y = -100;
-    this.offset = 0;
-    this.even = false;
-    this.isEven = function () { return this.even; }
-}
 
 function Shot() {
     this.x = 0;
@@ -62,8 +54,7 @@ var bitmap = {
     }
 }
 
-Ship.prototype = Beam.prototype = 
-Alien.prototype = Bomb.prototype = Shot.prototype = bitmap;
+Ship.prototype = Alien.prototype = Bomb.prototype = Shot.prototype = bitmap;
 
 Alien.isEven = false;
 Alien.isDown = false;
@@ -104,7 +95,6 @@ function init() {
 
 function start() {
     ship = new Ship();
-    beam = new Beam();
     clock = 0;
     Alien.interval = 1000 - stage * 50;
 
@@ -177,7 +167,6 @@ function gameOver() {
 
 function mainLoop() {
     clock++;
-    //aliens.length = 1; // debug
     
     if (aliens.length == 0) {
         if (clock > 100) {
@@ -186,32 +175,6 @@ function mainLoop() {
         }
         return;
     }
-
-    // update beam and check if it hits an alien
-    var hit = -1;
-    if (beam.y > -30) {
-        beam.y -= 15;
-        beam.even = !beam.even;
-        aliens.forEach(function (e, i) {
-            if (e.x - 15 < beam.x && beam.x < e.x + 15 &&
-                e.y - 10 < beam.y && beam.y < e.y + 20) {
-                hit = i; beam.y = -100; score += e.point;
-                return;
-            }
-        });
-    }
-    if (hit >= 0) {
-        aliens.splice(hit, 1);
-
-       // stage clear
-       if (aliens.length == 0) {
-            clock = 0;
-            draw();
-            return;
-        }
-    }
-
-     // update bombs and check if it hits the ship
     bombs.forEach(function (b) {
         if (b.time < clock) {
             var a = aliens[rand(aliens.length)];
@@ -282,9 +245,6 @@ function draw() {
 
     // draw ship
     ship.draw(ctx);
-
-    // draw beam
-    beam.draw(ctx);
 
     // draw shots
     shots.forEach(function (shot) {
