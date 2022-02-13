@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <script type="text/javascript">
     "use strict";
-var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
+var ctx, ship, ufo, shots = [], aliens = [], bombs = [], walls = [],
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
     shotInterval = 0 ;
 
@@ -50,6 +50,14 @@ function Ufo() {
     this.point = 300;
     this.isEven = function () { return true; }
 }
+
+function Wall() {
+    this.x = 0;
+    this.y = 0;
+    this.offset = 192;
+    this.isEven = function () { return true; }
+}
+
 var bitmap = {
     draw: function (ctx) {
         if (!this.strip) {
@@ -62,7 +70,7 @@ var bitmap = {
 }
 
 Ship.prototype = Alien.prototype = Bomb.prototype =
-Shot.prototype = Ufo.prototype = bitmap;
+Shot.prototype = Ufo.prototype = Wall.prototype = bitmap;
 
 Alien.isEven = false;
 Alien.isDown = false;
@@ -80,6 +88,10 @@ function init() {
 
     for (var i = 0; i < 7; i++) {
         shots.push(new Shot());
+    }
+
+    for (var i = 0; i < 31; i++) {
+        walls.push(new Wall());
     }
 
         // キーイベントハンドラーの初期化
@@ -122,6 +134,11 @@ function start() {
      if (isNaN(mainT)) {
          mainT = setInterval(mainLoop, 50);
      }
+
+     // Wall Draw
+     walls.forEach(function(wall) {
+        wall.x = 10, wall.y = 550;
+     });
 }
 
 function keyDown(evt) {
@@ -287,6 +304,9 @@ function draw() {
 
     // draw ufo
     ufo.draw(ctx);
+
+    //draw wall
+    walls.forEach(function (wall) { wall.draw(ctx); });
 
     // draw score
     ctx.fillStyle = 'rgb(0,255,0)';
