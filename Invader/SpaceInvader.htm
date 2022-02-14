@@ -98,17 +98,19 @@ function init() {
     }
 
     // トーチカ設定
-    blocks[0] = new Block(20,452);
-    blocks[1] = new Block(44,452);
-    blocks[2] = new Block(68,452);
-    blocks[3] = new Block(20,476);
-    blocks[4] = new Block(44,476);
-    blocks[5] = new Block(68,476);
-    blocks[6] = new Block(20,500);
-    blocks[7] = new Block(44,500);
-    blocks[8] = new Block(68,500);
-    blocks[9] = new Block(20,524);
-    blocks[10] = new Block(68,524);
+    for (var i=0; i<5; i++) {
+        blocks[i*11+0] = new Block(i*115+30,452);
+        blocks[i*11+1] = new Block(i*115+54,452);
+        blocks[i*11+2] = new Block(i*115+78,452);
+        blocks[i*11+3] = new Block(i*115+30,476);
+        blocks[i*11+4] = new Block(i*115+54,476);
+        blocks[i*11+5] = new Block(i*115+78,476);
+        blocks[i*11+6] = new Block(i*115+30,500);
+        blocks[i*11+7] = new Block(i*115+54,500);
+        blocks[i*11+8] = new Block(i*115+78,500);
+        blocks[i*11+9] = new Block(i*115+30,524);
+        blocks[i*11+10] = new Block(i*115+78,524);
+    };
 
      //draw wall
      for (var i=0; i<blocks.length; i++) {
@@ -155,6 +157,10 @@ function start() {
         }
         bombs.push(new Bomb());
     }
+
+    walls.forEach(function(w) {
+        w.exist = true;
+    });
 
      if (isNaN(alienT)) {
          alienT = setTimeout(alienLoop, Alien.interval);
@@ -275,6 +281,14 @@ function mainLoop() {
                     return;
                     }
                 })
+                walls.forEach(function (w) {
+                if (w.x - 15 < shot.x && shot.x < w.x + 15 &&
+                    w.y - 10 < shot.y && shot.y < w.y + 20 &&
+                    w.exist ) {
+                    w.exist = false; shot.y= -100;
+                    return;
+                    }
+                })
                 if (ufo.x - 15 < shot.x && shot.x < ufo.x + 15 &&
                     ufo.y - 10 < shot.y && shot.y < ufo.y + 20) {
                     hitUfo = 1; shot.y = -100; score += ufo.point;
@@ -296,7 +310,7 @@ function mainLoop() {
 
        // stage clear
        if (aliens.length == 0) {
-            clock = 0;
+             clock = 0;
             draw();
             return;
         }
@@ -329,7 +343,9 @@ function draw() {
     ufo.draw(ctx);
 
     walls.forEach(function(w) {
-        w.draw(ctx);
+        if (w.exist) {
+            w.draw(ctx);
+        };
     });
 
     // draw score
