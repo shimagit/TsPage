@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <script type="text/javascript">
     "use strict";
-var ctx, ship, ufo, shots = [], aliens = [], bombs = [], walls = [],
+var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
+    block, blocks=[], walls=[], 
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
     shotInterval = 0 ;
 
@@ -51,9 +52,15 @@ function Ufo() {
     this.isEven = function () { return true; }
 }
 
+function Block(_x, _y) {
+    this.x = _x;
+    this.y = _y;
+}
+
 function Wall() {
     this.x = 0;
     this.y = 0;
+    this.exist = true; 
     this.offset = 192;
     this.isEven = function () { return true; }
 }
@@ -90,9 +97,30 @@ function init() {
         shots.push(new Shot());
     }
 
-    for (var i = 0; i < 31; i++) {
+    // トーチカ設定
+    blocks[0] = new Block(20,452);
+    blocks[1] = new Block(44,452);
+    blocks[2] = new Block(68,452);
+    blocks[3] = new Block(20,476);
+    blocks[4] = new Block(44,476);
+    blocks[5] = new Block(68,476);
+    blocks[6] = new Block(20,500);
+    blocks[7] = new Block(44,500);
+    blocks[8] = new Block(68,500);
+    blocks[9] = new Block(20,524);
+    blocks[10] = new Block(68,524);
+
+     //draw wall
+     for (var i=0; i<blocks.length; i++) {
         walls.push(new Wall());
-    }
+     }
+
+     var i=0;
+     walls.forEach(function(w) {
+        w.x = blocks[i].x;
+        w.y = blocks[i].y;
+        i++;
+    });
 
         // キーイベントハンドラーの初期化
         window.addEventListener('keydown', function (e) {
@@ -134,11 +162,6 @@ function start() {
      if (isNaN(mainT)) {
          mainT = setInterval(mainLoop, 50);
      }
-
-     // Wall Draw
-     walls.forEach(function(wall) {
-        wall.x = 10, wall.y = 550;
-     });
 }
 
 function keyDown(evt) {
@@ -305,8 +328,9 @@ function draw() {
     // draw ufo
     ufo.draw(ctx);
 
-    //draw wall
-    walls.forEach(function (wall) { wall.draw(ctx); });
+    walls.forEach(function(w) {
+        w.draw(ctx);
+    });
 
     // draw score
     ctx.fillStyle = 'rgb(0,255,0)';
