@@ -245,6 +245,15 @@ function mainLoop() {
         if (b.x - 15 < ship.x && ship.x < b.x + 15 && 530 < b.y && b.y < 550) {
             gameOver();
         }
+
+        walls.forEach(function (w) {
+            if (w.x - 15 < b.x && b.x < w.x + 15 &&
+                w.y - 10 < b.y && b.y < w.y + 20 &&
+                w.exist ) {
+                w.exist = false; b.y= 600;
+                return;
+            }
+        })
     });
 
     // UFO Exist & Move
