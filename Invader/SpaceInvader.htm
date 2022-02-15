@@ -87,6 +87,11 @@ Alien.interval = 1000;
 function rand(max) {
     return Math.floor(Math.random() * max);
 }
+function wait(waitTime) {
+    for (var i=0; i < waitTime*5; i++) {
+        console.log(i);
+    }
+}
 
 function init() {
     ctx = document.getElementById('canvas').getContext('2d');
@@ -270,7 +275,7 @@ function mainLoop() {
     }
 
     // move the ship
-    if (ship.keyR) { ship.x = Math.min(ship.x + 5, 570); }
+    if (ship.keyR) { ship.x = Math.min(ship.x + 5,  570); }
     if (ship.keyL) { ship.x = Math.max(ship.x - 5, 0); }
     
     shotInterval--;
@@ -286,6 +291,9 @@ function mainLoop() {
                 aliens.forEach(function (e, i) {
                 if (e.x - 15 < shot.x && shot.x < e.x + 15 &&
                     e.y - 10 < shot.y && shot.y < e.y + 20) {
+                    shot.offset = 168;
+                    shot.draw(ctx);
+                    wait(1000);
                     hit = i; shot.y = -100; score += e.point;
                     return;
                     }
@@ -369,6 +377,7 @@ function draw() {
         ctx.fillText('GAME OVER', 220, 150);
     }
 }
+
     </script>
 </head>
 <body onload="init();">
