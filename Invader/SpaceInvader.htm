@@ -19,7 +19,7 @@ function Shot() {
     this.maxCount = 55;
     this.offset = 216;
     this.even = false;
-    this.isEven = function () { return this.even; }
+    this.isEven = function () { return true; }
 }
 function Bomb() {
     this.x = 0;
@@ -106,7 +106,7 @@ function init() {
     ctx.font = "20pt Arial";
     score = 0, stage = 1;
 
-    for (var i = 0; i < 7; i++) {
+    for (var i = 0; i < 10; i++) {
         shots.push(new Shot());
     }
 
@@ -301,8 +301,10 @@ function mainLoop() {
                     e.y - 10 < shot.y && shot.y < e.y + 20) {
                     shot.offset = 216;
                     shot.draw(ctx);
+                    //audioElement.currentTime = 0;
+                    explode.currentTime = 0;
                     playSound('explode');
-                    wait(1000);
+                    // wait(1000);
                     hit = i; shot.y = -100; score += e.point;
                     return;
                     }
@@ -328,7 +330,8 @@ function mainLoop() {
                 shot.y = ship.y;
                 shotInterval = 5;
                 fire = true;
-                playSound('shot');
+                shot_s.currentTime = 0;
+                playSound('shot_s');
             }
         });
 
@@ -394,7 +397,7 @@ function draw() {
 <body onload="init();">
     <canvas id="canvas" width="600" height="600" />
     <img id="strip" src="strip.png" style="display:none;" />
-    <audio id="shot" src="Shofixti-Shot.wav"></audio>
+    <audio id="shot_s" src="Shofixti-Shot.wav"></audio>
     <audio id="explode" src="GUN_SHOT.wav"></audio>
 </body>
 </html>
