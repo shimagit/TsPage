@@ -17,7 +17,7 @@ function Shot() {
     this.y = -100;
     this.count = this.maxCount;
     this.maxCount = 55;
-    this.offset = 0;
+    this.offset = 216;
     this.even = false;
     this.isEven = function () { return this.even; }
 }
@@ -299,7 +299,7 @@ function mainLoop() {
                 aliens.forEach(function (e, i) {
                 if (e.x - 15 < shot.x && shot.x < e.x + 15 &&
                     e.y - 10 < shot.y && shot.y < e.y + 20) {
-                    shot.offset = 168;
+                    shot.offset = 216;
                     shot.draw(ctx);
                     playSound('explode');
                     wait(1000);
@@ -359,6 +359,7 @@ function draw() {
     // draw shots
     shots.forEach(function (shot) {
         if (shot.count < shot.maxCount) {
+            shot.offset = 216;
             shot.draw(ctx);
         }
     });
