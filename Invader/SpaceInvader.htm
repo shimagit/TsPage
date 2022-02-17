@@ -50,7 +50,7 @@ function Ship() {
 function Ufo() {
     this.x = 600;
     this.y = 30;
-    this.offset = 192;
+    this.offset = 240;
     this.point = 300;
     this.isEven = function () { return true; }
 }
@@ -181,6 +181,8 @@ function start() {
      if (isNaN(mainT)) {
          mainT = setInterval(mainLoop, 50);
      }
+
+     //playSound("ufo_s");
 }
 
 function keyDown(evt) {
@@ -235,12 +237,14 @@ function gameOver() {
 }
 
 function mainLoop() {
+    playSound("bgm_s");
     clock++;
     
     if (aliens.length == 0) {
         if (clock > 100) {
             stage++;
             start();
+            //playSound("bgm_s");
         }
         return;
     }
@@ -276,6 +280,7 @@ function mainLoop() {
         }
         else {
             ufo.x -= 5;
+            playSound("ufo_s");
         }
     }
     else if (rand(50) == 0 ) {
@@ -399,5 +404,7 @@ function draw() {
     <img id="strip" src="strip.png" style="display:none;" />
     <audio id="shot_s" src="Shofixti-Shot.wav"></audio>
     <audio id="explode" src="GUN_SHOT.wav"></audio>
+    <audio id="ufo_s" src="UFO_flay.wav"></audio>
+    <audio id="bgm_s" src="BGM.mp3"></audio>
 </body>
 </html>
