@@ -363,7 +363,7 @@ function mainLoop() {
                 aliens.forEach(function (e, i) {
                 if (e.x - 15 < shot.x && shot.x < e.x + 15 &&
                     e.y - 10 < shot.y && shot.y < e.y + 20) {
-                    shot.offset = 216;
+                    shot.offset = 312;
                     shot.draw(ctx);
                     //audioElement.currentTime = 0;
                     explode.currentTime = 0;
