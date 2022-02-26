@@ -185,7 +185,7 @@ function init() {
     });
 
         // キーイベントハンドラーの初期化
-        window.addEventListener('keydown', function (e) {
+    window.addEventListener('keydown', function (e) {
         switch (e.keyCode) {
             case 37: ship.keyL = true; break;
             case 39: ship.keyR = true; break;
@@ -199,6 +199,48 @@ function init() {
             case 32: ship.keyH = false; break;
         }
     });
+
+    // キーボード操作
+    //window.addEventListener("keydown" , this.keydown.bind(this));
+    //window.addEventListener("keyup"   , this.keyup.bind(this));
+
+    // マウス操作
+    //window.addEventListener("mousemove" , this.mousemove.bind(this));
+    window.addEventListener("mousedown" , function (e) {
+        ship.keyH = true;
+        }
+    );
+    window.addEventListener("mouseup" , function (e) {
+        ship.keyH = false;
+        }
+    );
+    window.addEventListener("mousemove" , function (e) {
+        console.log("aaa");
+            }
+    );
+//     MAIN.prototype.mousemove = function(e){
+//     if('ontouchstart' in window === true){return;}
+
+//     if(typeof this.mouse_pos === "undefined"){
+//       this.mouse_pos = e.pageX;
+//     }
+//     let base_offset = -this.space.left;
+//     this.racket_mouse_move(e.pageX + base_offset);
+//   };
+//   MAIN.prototype.racket_mouse_move = function(x){
+//     let min = 0;
+//     let max = this.space.width - this.racket.offsetWidth;
+//     if(x < min){x = 0;}
+//     else if(x > max){x = max;}
+//     this.racket.style.setProperty("left" , x +"px" , "");
+//     this.mouse_pos = x;
+//   };
+    
+    // スマホ操作
+    window.addEventListener("touchstart" , this.touchstart.bind(this));
+    window.addEventListener("touchmove"  , this.touchmove.bind(this));
+    window.addEventListener("touchend"   , this.touchend.bind(this));
+
 }
 
 // Game start 
