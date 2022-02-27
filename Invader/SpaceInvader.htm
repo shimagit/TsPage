@@ -9,7 +9,8 @@ var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
     block, blocks=[], walls=[], 
     block2, block2s=[], wall2s=[],
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
-    shotInterval = 0, startFlag = false;
+    shotInterval = 0, startFlag = false,
+    diffX, diffY, shipMouse = false;
 
 // Start Waiting
 const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
@@ -216,6 +217,14 @@ function init() {
     );
     window.addEventListener("mousemove" , function (e) {
         console.log("aaa");
+        console.log(e.pageX);
+        ship.x = e.pageX;
+        if (ship.x > 570){ship.x = 570};
+        if (ship.x < 0){ship.x = 0}; 
+    //     if(typeof this.mouse_pos === "undefined"){
+    //     this.mouse_pos = e.pageX;
+    //     colsole.log(this.mouse_pos)
+    //  }
             }
     );
 //     MAIN.prototype.mousemove = function(e){
