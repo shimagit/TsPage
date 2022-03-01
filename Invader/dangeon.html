@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #maze {
+      width: 900px; height: 600px;
+      touch-action: none;
+    }
+    #START {
+      position: absolute;
+      left: 200px;
+      top: 200px;
+    }
+  </style>
+  <script>
+    "use strict";
+
+    var W = 31, H = 31, GAMECLEAR = 1, GAMEOVER = 2;
+    var ctx, keyCode = 0, maze = [], player, aliens = [];
+    var timer = NaN, status = 0;
+
+    var scroller = new Scroller();
+    Player.prototype = scroller;
+    Alien.prototype = scroller;
+
+    // スクロール処理オブジェクト
+
+    function Scroller(){
+      this.doScroll = function(){
+        if (this.dx == 0 && this.dy == 0){
+          return;
+        }
+        if (++this.scrollCount >= 5){
+          this.x = this.x + this.dx;
+          this.y = this.y + this.dy;
+          this.dx = 0;
+          this.dy = 0;
+          this.scrollCount = 0;
+        }
+      }
+      this.getScrollX = function(){
+        return this.x*50 + this.dy*this.scrollCount*10;
+      }
+      this.getScrollX = function(){
+        return this.x*50 + this.dy*this.scrollCount*10;
+      }
+    }
+
+    // 主人公オブジェクトコンストラクタ
+
+    function Player(x,y){
+      this.x = x;
+      this.y = y;
+      this.dx = 0;
+      this.dy = 0;
+      this.dir = 0;
+      this.scrollCount = 0;
+
+      this.update = function(){
+        this.doScroll();
+        if (this.scrollCount > 0){
+          return;
+        }
+        if (this.x == W - 2 && this.y == W -2){
+          clearInterval(timer);
+          status = GAMECLEAR;
+          document.getElementById("bgm").pause();
+          repaint();
+        }
+        this.dx = 0;
+        this.dy = 0;
+        var nx = 0, ny = 0;
+        switch(keyCode){
+          
+        }
+      }
+    }
+  </script>
+</head>
+</html>
