@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="stylesheet.css">
     <style>
+        body {
+            user-select: none;
+        }
+
         button {
             width: 150px;
             height: 150px;
@@ -19,6 +23,9 @@
     shotInterval = 0, startFlag = false,
     diffX, diffY, shipMouse = false,
     buttons, keyCode2 = 0;
+    document.oncontextmenu = () => {
+      return false;
+    }
 
 // Start Waiting
 const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
@@ -280,6 +287,7 @@ function init() {
     //window.addEventListener("touchstart" , this.touchstart.bind(this));
     //window.addEventListener("touchmove"  , this.touchmove.bind(this));
     //window.addEventListener("touchend"   , this.touchend.bind(this));
+
     buttons = document.querySelectorAll("button")
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].onclick = function(e) {
@@ -322,9 +330,11 @@ function start() {
     var maze = document.getElementById("canvas");
     maze.onmousedown = mymousedown;
     maze.onmouseup = mykeyup;
-    // maze.oncontextmenu = function (e) { e.preventDefault(); };
-    // maze.addEventListener('touchstart', mymousedown);
-    // maze.addEventListener('touchend', mykeyup);
+    //maze.touchstart = mytouchstart;
+    //maze.touchend = mytouchend;
+     maze.oncontextmenu = function (e) { e.preventDefault(); };
+     maze.addEventListener('touchstart', mymousedown);
+     maze.addEventListener('touchend', mykeyup);
 
             //timer = setInterval(tick, 45);
             //document.getElementById("START").style.display = "none";
@@ -378,8 +388,11 @@ function mykeyup(e){
 }
 
 function mymousedown(e) {
-    var mouseX = !isNaN(e.offsetX) ? e. offsetX : e.touches[0].clineX;
-    var mouseY = !isNaN(e.offsetY) ? e. offsetY : e.touches[0].clineY;
+    e.preventDefault() ;
+    var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX
+    var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY - 100;
+    //var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clineX;
+    //var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clineY;
     if (200 < mouseX && mouseX < 400 && 600 < mouseY && mouseY < 800) {
         mouseX -= 300;
         mouseY -= 700;
@@ -393,11 +406,44 @@ function mymousedown(e) {
             case 39: ship.keyR = true; break;
             case 32: ship.keyH = true; break;
         }
+        drawCircle(mouseX + 300, mouseY + 700, 30,"red");
     }
     if (50 < mouseX && mouseX < 150 && 650 < mouseY && mouseY < 750) {
         keyCode2 = 32; ship.keyH = true;
     }
     console.log(mouseX, mouseY);
+    drawCircle(mouseX, mouseY, 35,"red");
+}
+
+function mytouchend(e){
+    // keyCodeX = 0;
+    keyCode2 = 0;
+    ship.keyL = false;
+    ship.keyR = false;
+    ship.keyH = false;
+}
+
+function mytouchstart(e) {
+    var touchX = !isNaN(e.offsetX) ? e. offsetX : e.touches[0].clineX;
+    var touchY = !isNaN(e.offsetY) ? e. offsetY : e.touches[0].clineY;
+    if (200 < touchX && touchX < 400 && 600 < touchY && touchY < 800) {
+        touchX -= 300;
+        touchY -= 700;
+        if (Math.abs(touchX) > Math.abs(touchY)) {
+            keyCode2 = touchX < 0 ? 37 : 39;
+        } else {
+            keyCode2 = touchY < 0 ? 38 : 40;
+        }
+        switch (keyCode2) { 
+            case 37: ship.keyL = true; break;
+            case 39: ship.keyR = true; break;
+            case 32: ship.keyH = true; break;
+        }
+    }
+    if (50 < touchX && touchX < 150 && 650 < touchY && touchY < 850) {
+        keyCode2 = 32; ship.keyH = true;
+    }
+    console.log(touchX, touchY);
 }
 
 function zkeyDown(evt) {
@@ -506,7 +552,7 @@ function mainLoop() {
             playSound("ufo_s");
         }
     }
-    else if (rand(50) == 0 ) {
+    else if (rand(500) == 0 ) {
         ufo.x = 590;
     }
 
