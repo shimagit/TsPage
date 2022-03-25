@@ -209,22 +209,6 @@ function init() {
         i++;
     });
 
-        // キーイベントハンドラーの初期化
-    // window.addEventListener('keydown', function (e) {
-    //     switch (e.keyCode) {
-    //         case 37: ship.keyL = true; break;
-    //         case 39: ship.keyR = true; break;
-    //         case 32: ship.keyH = true; break;
-    //     }
-    // });
-    // window.addEventListener('keyup', function (e) {
-    //     switch (e.keyCode) {
-    //         case 37: ship.keyL = false; break;
-    //         case 39: ship.keyR = false; break;
-    //         case 32: ship.keyH = false; break;
-    //     }
-    // });
-
     // キーイベントハンドラーの初期化
     window.addEventListener('keydown', function (e) {
         keyCode2 = e.keyCode;
@@ -242,104 +226,16 @@ function init() {
             case 32: ship.keyH = false; break;
         }
     });
-
-
-    // キーボード操作
-    //window.addEventListener("keydown" , this.keydown.bind(this));
-    //window.addEventListener("keyup"   , this.keyup.bind(this));
-
-    // 旧マウス操作
-    // window.addEventListener("mousedown" , function (e) {
-    //     ship.keyH = true;
-    //     }
-    // );
-    // window.addEventListener("mouseup" , function (e) {
-    //     ship.keyH = false;
-    //     }
-    // );
-    // window.addEventListener("mousemove" , function (e) {
-    //     ship.x = e.pageX;
-    //     if (ship.x > 570){ship.x = 570};
-    //     if (ship.x < 0){ship.x = 0}; 
-    //     }
-    // );
-
-
-//     MAIN.prototype.mousemove = function(e){
-//     if('ontouchstart' in window === true){return;}
-
-//     if(typeof this.mouse_pos === "undefined"){
-//       this.mouse_pos = e.pageX;
-//     }
-//     let base_offset = -this.space.left;
-//     this.racket_mouse_move(e.pageX + base_offset);
-//   };
-//   MAIN.prototype.racket_mouse_move = function(x){
-//     let min = 0;
-//     let max = this.space.width - this.racket.offsetWidth;
-//     if(x < min){x = 0;}
-//     else if(x > max){x = max;}
-//     this.racket.style.setProperty("left" , x +"px" , "");
-//     this.mouse_pos = x;
-//   };
-    
-    // スマホ操作
-    //window.addEventListener("touchstart" , this.touchstart.bind(this));
-    //window.addEventListener("touchmove"  , this.touchmove.bind(this));
-    //window.addEventListener("touchend"   , this.touchend.bind(this));
-
-    buttons = document.querySelectorAll("button")
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].onclick = function(e) {
-            var index = e.target.id.charAt(1);
-            blink(index);
-        }
-    }
-}
-    // buttons = document.querySelectorAll("button")
-    //         for (var i = 0 ; i < buttons.length ; i++) {
-    //             buttons[i].onclick = function (e) {
-    //                 if (qTimer) { return; }
-    //                 var index = e.target.id.charAt(1);
-    //                 blink(index);
-    //                 answer(index);
-    //             }
-    //             sounds[i] = new Audio("sound" + (i + 1) + ".mp3");
-    //             sounds[i].preload = "auto";
-    //             sounds[i].load();
-    //         }
-
-function blink(index) {
-    var fgcolor = ["#FC0","#FF0","#0F0","#00F"];
-    var bgcolor = ["#600","#660","#060","#006"];
-
-    gobj("b"+index).style.backgroundColor= fgcolors[index];
-    
-    setTimeout(function(){
-        for (var i=0; i<4; i++) {
-            gobj("b"+i).style.backgroundColor = bgcolors[i];
-        }
-    },400)
 }
 
 // Game start 
 function start() {
-    // window.onkeydown = mykeydown;
-    // window.onkeyup = mykeyup;
-
     var maze = document.getElementById("canvas");
     maze.onmousedown = mymousedown;
     maze.onmouseup = mykeyup;
-    //maze.touchstart = mytouchstart;
-    //maze.touchend = mytouchend;
-     maze.oncontextmenu = function (e) { e.preventDefault(); };
-     maze.addEventListener('touchstart', mymousedown);
-     maze.addEventListener('touchend', mykeyup);
-
-            //timer = setInterval(tick, 45);
-            //document.getElementById("START").style.display = "none";
-            //document.getElementById("bgm").play();
-
+    maze.oncontextmenu = function (e) { e.preventDefault(); };
+    maze.addEventListener('touchstart', mymousedown);
+    maze.addEventListener('touchend', mykeyup);
 
     startFlag = true;
     ship = new Ship();
@@ -380,7 +276,6 @@ function mykeydown(e){
 }
 
 function mykeyup(e){
-    // keyCodeX = 0;
     keyCode2 = 0;
     ship.keyL = false;
     ship.keyR = false;
@@ -391,8 +286,6 @@ function mymousedown(e) {
     e.preventDefault() ;
     var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX
     var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY - 100;
-    //var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clineX;
-    //var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clineY;
     if (200 < mouseX && mouseX < 400 && 600 < mouseY && mouseY < 800) {
         mouseX -= 300;
         mouseY -= 700;
@@ -445,16 +338,6 @@ function mytouchstart(e) {
     }
     console.log(touchX, touchY);
 }
-
-function zkeyDown(evt) {
-    if (ship.keyL) ship.moveL = true;
-    if (ship.keyR) ship.moveR = true;
-};
-
-function zkeyUp(evt) {
-    if (evt.keyCode == 37) ship.moveL = false;
-    if (evt.keyCode == 39) ship.moveR = false;
-};
 
  function alienLoop() {
     var minX = Infinity, maxX = 0, maxY = 0;
@@ -681,7 +564,6 @@ function draw() {
     }
 
     //コントローラ描画
-    //ctx.drawImage(arrows, 670, 970, 200, 200);
     var ax = -100, ay = -100;
     switch (keyCode2) {
         case 39: ax = 360; ay = 700; break;
@@ -701,7 +583,6 @@ function draw() {
 
 <body onload="init();">
     <canvas id="canvas" width="600" height="1000"></canvas>
-    <!-- <canvas id="maze" width="900" height="600"></canvas> -->
     <img id="arrows" src="arrows.png" style="display:none;" />
     <img id="strip" src="strip.png" style="display:none;" />
     <audio id="shot_s" src="Shofixti-Shot.wav"></audio>
