@@ -16,8 +16,8 @@
 
     #START {
       position: absolute;
-      left: 100px;
-      top: 200px;
+      left: 50px;
+      top: 100px;
     }
 
     </style>
@@ -79,7 +79,7 @@ function Alien(x, y, point, offset) {
 
 function Ship() {
     this.x = 0;
-    this.y = 550;
+    this.y = 850;
     this.offset = 192;
     this.moveL = false;
     this.moveR = false;
@@ -87,7 +87,7 @@ function Ship() {
 }
 
 function Ufo() {
-    this.x = 600;
+    this.x = 900;
     this.y = 30;
     this.offset = 240;
     this.point = 300;
@@ -290,9 +290,9 @@ function mymousedown(e) {
     e.preventDefault() ;
     var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX;
     var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY;
-    if (200 < mouseX && mouseX < 600 && 600 < mouseY && mouseY < 1000) {
-        mouseX -= 400;
-        mouseY -= 800;
+    if (200 < mouseX && mouseX < 900 && 900 < mouseY && mouseY < 1500) {
+        mouseX -= 600;
+        mouseY -= 1200;
         if (Math.abs(mouseX) > Math.abs(mouseY)) {
             keyCode2 = mouseX < 0 ? 37 : 39;
         } else {
@@ -305,7 +305,7 @@ function mymousedown(e) {
         }
         drawCircle(mouseX + 300, mouseY + 700, 30,"red");
     }
-    if (0 < mouseX && mouseX < 200 && 700 < mouseY && mouseY < 900) {
+    if (0 < mouseX && mouseX < 300 && 1050 < mouseY && mouseY < 1450) {
         keyCode2 = 32; ship.keyH = true;
     }
     drawCircle(mouseX, mouseY, 35,"red");
@@ -369,12 +369,12 @@ function mainLoop() {
             b.x = a.x, b.y = a.y + 30;
             b.time += rand(200) + 50;
         }
-        else if (b.y < 600) {
+        else if (b.y < 900) {
             b.y += 10;
         }
 
         b.even = !b.even;
-        if (b.x - 15 < ship.x && ship.x < b.x + 15 && 530 < b.y && b.y < 550) {
+        if (b.x - 15 < ship.x && ship.x < b.x + 15 && 830 < b.y && b.y < 850) {
             gameOver();
         }
 
@@ -398,21 +398,21 @@ function mainLoop() {
     });
 
     // UFO Exist & Move
-    if (ufo.x < 600) {
+    if (ufo.x < 900) {
         if (ufo.x <= 0 ) {
-            ufo.x = 600;
+            ufo.x = 900;
         }
         else {
             ufo.x -= 5;
             playSound("ufo_s");
         }
     }
-    else if (rand(500) == 0 ) {
-        ufo.x = 590;
+    else if (rand(100) == 0 ) {
+        ufo.x = 890;
     }
 
     // move the ship
-    if (ship.keyR) { ship.x = Math.min(ship.x + 5,  570); }
+    if (ship.keyR) { ship.x = Math.min(ship.x + 5,  870); }
     if (ship.keyL) { ship.x = Math.max(ship.x - 5, 0); }
     
     shotInterval--;
@@ -487,9 +487,9 @@ function mainLoop() {
 function draw() {
     // fill background
     ctx.fillStyle = 'rgb(0,0,0)';
-    ctx.fillRect(0, 0, 600, 600);
-    ctx.drawImage(arrows, 200, 600, 400, 400);
-    ctx.drawImage(cnt_button, 0, 700, 200, 200);
+    ctx.fillRect(0, 0, 900, 900);
+    ctx.drawImage(arrows, 300, 900, 600, 600);
+    ctx.drawImage(cnt_button, 0, 1050, 300, 300);
 
     // draw aliens
     aliens.forEach(function (a) { a.draw(ctx); });
@@ -538,11 +538,11 @@ function draw() {
     //コントローラ描画
     var ax = -100, ay = -100;
     switch (keyCode2) {
-        case 39: ax = 460; ay = 800; break;
-        case 40: ax = 400; ay = 860; break;
-        case 37: ax = 345; ay = 800; break;
-        case 38: ax = 400; ay = 750; break;
-        case 32: ax = 100; ay = 800; break;
+        case 39: ax = 750; ay = 1200; break;
+        case 40: ax = 600; ay = 1350; break;
+        case 37: ax = 450; ay = 1200; break;
+        case 38: ax = 600; ay = 1050; break;
+        case 32: ax = 150; ay = 1200; break;
     }
     drawCircle(ax, ay, 30,"yellow");
     console.log(keyCode2);
@@ -554,7 +554,7 @@ function draw() {
 <!-- <h1 class="main_title">Please click here</h1> -->
 
 <body onload="init();">
-    <canvas id="canvas" width="600" height="1000"></canvas>
+    <canvas id="canvas" width="900" height="1500"></canvas>
     <img id="arrows" src="arrows.png" style="display:none;" />
     <img id="cnt_button" src="cnt_button.png" style="display:none;" />
     <img id="strip" src="strip.png" style="display:none;" />
