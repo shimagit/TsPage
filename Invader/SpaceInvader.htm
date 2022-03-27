@@ -3,27 +3,52 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        body {
+            user-select: none;
+        }
+
+        button {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+        }
+
+    #START {
+      position: absolute;
+      left: 100px;
+      top: 200px;
+    }
+
+    </style>
     <script type="text/javascript">
     "use strict";
-var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
+    var ctx, ship, ufo, shots = [], aliens = [], bombs = [],
     block, blocks=[], walls=[], 
     block2, block2s=[], wall2s=[],
     score = 0, stage = 1, clock = 0, mainT = NaN, alienT = NaN,
-    shotInterval = 0, startFlag = false;
+    shotInterval = 0, startFlag = false,
+    diffX, diffY, shipMouse = false,
+    buttons, keyCode2 = 0;
+    document.oncontextmenu = () => {
+      return false;
+    }
 
 // Start Waiting
-const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
+// const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
 
-async function WaitSample() {
-  console.log("クリック待ち開始。");
-  await WaitForClick();
-  console.log("この行は、クリックされた後に実行されます。");
-    if (startFlag==false) {
-        start();
-    }
-}
+// async function WaitSample() {
+//   console.log("クリック待ち開始。");
+//   await WaitForClick();
+//   console.log("この行は、クリックされた後に実行されます。");
+//     if (startFlag==false) {
+//         start();
+//     }
+// }
 
-WaitSample();
+// WaitSample();
+
+function gobj(id) {return document.getElementById(id)}
 
 // Function's
 function Shot() {
@@ -122,9 +147,16 @@ function playSound(soundName) {
     document.getElementById(soundName).play();
 }
 
+function drawCircle(x, y, r, color){
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fill();
+}
+
 // Game initialize
 function init() {
-      ctx = document.getElementById('canvas').getContext('2d');
+    ctx = document.getElementById('canvas').getContext('2d');
     ctx.font = "20pt Arial";
     score = 0, stage = 1;
 
@@ -184,8 +216,9 @@ function init() {
         i++;
     });
 
-        // キーイベントハンドラーの初期化
-        window.addEventListener('keydown', function (e) {
+    // キーイベントハンドラーの初期化
+    window.addEventListener('keydown', function (e) {
+        keyCode2 = e.keyCode;
         switch (e.keyCode) {
             case 37: ship.keyL = true; break;
             case 39: ship.keyR = true; break;
@@ -193,6 +226,7 @@ function init() {
         }
     });
     window.addEventListener('keyup', function (e) {
+        keyCode2 = 0;
         switch (e.keyCode) {
             case 37: ship.keyL = false; break;
             case 39: ship.keyR = false; break;
@@ -203,6 +237,15 @@ function init() {
 
 // Game start 
 function start() {
+    var maze = document.getElementById("canvas");
+    maze.onmousedown = mymousedown;
+    maze.onmouseup = mymouseup;
+    maze.oncontextmenu = function (e) { e.preventDefault(); };
+    maze.addEventListener('touchstart', mymousedown);
+    maze.addEventListener('touchend', mymouseup);
+    document.getElementById("START").style.display = "none";
+
+
     startFlag = true;
     ship = new Ship();
     ufo = new Ufo();
@@ -235,16 +278,38 @@ function start() {
 
      playSound("ufo_s");
 }
+ 
+function mymouseup(e){
+    keyCode2 = 0;
+    ship.keyL = false;
+    ship.keyR = false;
+    ship.keyH = false;
+}
 
-function keyDown(evt) {
-    if (ship.keyL) ship.moveL = true;
-    if (ship.keyR) ship.moveR = true;
-};
-
-function keyUp(evt) {
-    if (evt.keyCode == 37) ship.moveL = false;
-    if (evt.keyCode == 39) ship.moveR = false;
-};
+function mymousedown(e) {
+    e.preventDefault() ;
+    var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX;
+    var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY;
+    if (200 < mouseX && mouseX < 600 && 600 < mouseY && mouseY < 1000) {
+        mouseX -= 400;
+        mouseY -= 800;
+        if (Math.abs(mouseX) > Math.abs(mouseY)) {
+            keyCode2 = mouseX < 0 ? 37 : 39;
+        } else {
+            keyCode2 = mouseY < 0 ? 38 : 40;
+        }
+        switch (keyCode2) { 
+            case 37: ship.keyL = true; break;
+            case 39: ship.keyR = true; break;
+            case 32: ship.keyH = true; break;
+        }
+        drawCircle(mouseX + 300, mouseY + 700, 30,"red");
+    }
+    if (0 < mouseX && mouseX < 200 && 700 < mouseY && mouseY < 900) {
+        keyCode2 = 32; ship.keyH = true;
+    }
+    drawCircle(mouseX, mouseY, 35,"red");
+}
 
  function alienLoop() {
     var minX = Infinity, maxX = 0, maxY = 0;
@@ -342,7 +407,7 @@ function mainLoop() {
             playSound("ufo_s");
         }
     }
-    else if (rand(50) == 0 ) {
+    else if (rand(500) == 0 ) {
         ufo.x = 590;
     }
 
@@ -423,6 +488,8 @@ function draw() {
     // fill background
     ctx.fillStyle = 'rgb(0,0,0)';
     ctx.fillRect(0, 0, 600, 600);
+    ctx.drawImage(arrows, 200, 600, 400, 400);
+    ctx.drawImage(cnt_button, 0, 700, 200, 200);
 
     // draw aliens
     aliens.forEach(function (a) { a.draw(ctx); });
@@ -467,16 +534,31 @@ function draw() {
     if (isNaN(mainT)) {
         ctx.fillText('GAME OVER', 220, 150);
     }
+
+    //コントローラ描画
+    var ax = -100, ay = -100;
+    switch (keyCode2) {
+        case 39: ax = 460; ay = 800; break;
+        case 40: ax = 400; ay = 860; break;
+        case 37: ax = 345; ay = 800; break;
+        case 38: ax = 400; ay = 750; break;
+        case 32: ax = 100; ay = 800; break;
+    }
+    drawCircle(ax, ay, 30,"yellow");
+    console.log(keyCode2);
 }
 
     </script>
 </head>
 
-<h1 class="main_title">Please click here</h1>
+<!-- <h1 class="main_title">Please click here</h1> -->
 
 <body onload="init();">
-    <canvas id="canvas" width="600" height="600" />
+    <canvas id="canvas" width="600" height="1000"></canvas>
+    <img id="arrows" src="arrows.png" style="display:none;" />
+    <img id="cnt_button" src="cnt_button.png" style="display:none;" />
     <img id="strip" src="strip.png" style="display:none;" />
+    <img id="START" src="start.png" onclick="start()"><br/>
     <audio id="shot_s" src="Shofixti-Shot.wav"></audio>
     <audio id="explode" src="GUN_SHOT.wav"></audio>
     <audio id="ufo_s" src="UFO_flay.wav"></audio>
