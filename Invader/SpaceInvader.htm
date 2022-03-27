@@ -13,6 +13,13 @@
             height: 150px;
             border-radius: 10px;
         }
+
+    #START {
+      position: absolute;
+      left: 200px;
+      top: 200px;
+    }
+
     </style>
     <script type="text/javascript">
     "use strict";
@@ -28,18 +35,18 @@
     }
 
 // Start Waiting
-const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
+// const WaitForClick = () => new Promise(resolve => document.addEventListener("click", resolve));
 
-async function WaitSample() {
-  console.log("クリック待ち開始。");
-  await WaitForClick();
-  console.log("この行は、クリックされた後に実行されます。");
-    if (startFlag==false) {
-        start();
-    }
-}
+// async function WaitSample() {
+//   console.log("クリック待ち開始。");
+//   await WaitForClick();
+//   console.log("この行は、クリックされた後に実行されます。");
+//     if (startFlag==false) {
+//         start();
+//     }
+// }
 
-WaitSample();
+// WaitSample();
 
 function gobj(id) {return document.getElementById(id)}
 
@@ -232,10 +239,12 @@ function init() {
 function start() {
     var maze = document.getElementById("canvas");
     maze.onmousedown = mymousedown;
-    maze.onmouseup = mykeyup;
+    maze.onmouseup = mymouseup;
     maze.oncontextmenu = function (e) { e.preventDefault(); };
     maze.addEventListener('touchstart', mymousedown);
-    maze.addEventListener('touchend', mykeyup);
+    maze.addEventListener('touchend', mymouseup);
+    document.getElementById("START").style.display = "none";
+
 
     startFlag = true;
     ship = new Ship();
@@ -270,12 +279,7 @@ function start() {
      playSound("ufo_s");
 }
  
-function mykeydown(e){
-    keyCodeX = e.keyCode;
-    console.log(keyCodeX);
-}
-
-function mykeyup(e){
+function mymouseup(e){
     keyCode2 = 0;
     ship.keyL = false;
     ship.keyR = false;
@@ -284,8 +288,8 @@ function mykeyup(e){
 
 function mymousedown(e) {
     e.preventDefault() ;
-    var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX
-    var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY - 100;
+    var mouseX = !isNaN(e.offsetX) ? e.offsetX : e.touches[0].clientX;
+    var mouseY = !isNaN(e.offsetY) ? e.offsetY : e.touches[0].clientY;
     if (200 < mouseX && mouseX < 400 && 600 < mouseY && mouseY < 800) {
         mouseX -= 300;
         mouseY -= 700;
@@ -304,39 +308,7 @@ function mymousedown(e) {
     if (50 < mouseX && mouseX < 150 && 650 < mouseY && mouseY < 750) {
         keyCode2 = 32; ship.keyH = true;
     }
-    console.log(mouseX, mouseY);
     drawCircle(mouseX, mouseY, 35,"red");
-}
-
-function mytouchend(e){
-    // keyCodeX = 0;
-    keyCode2 = 0;
-    ship.keyL = false;
-    ship.keyR = false;
-    ship.keyH = false;
-}
-
-function mytouchstart(e) {
-    var touchX = !isNaN(e.offsetX) ? e. offsetX : e.touches[0].clineX;
-    var touchY = !isNaN(e.offsetY) ? e. offsetY : e.touches[0].clineY;
-    if (200 < touchX && touchX < 400 && 600 < touchY && touchY < 800) {
-        touchX -= 300;
-        touchY -= 700;
-        if (Math.abs(touchX) > Math.abs(touchY)) {
-            keyCode2 = touchX < 0 ? 37 : 39;
-        } else {
-            keyCode2 = touchY < 0 ? 38 : 40;
-        }
-        switch (keyCode2) { 
-            case 37: ship.keyL = true; break;
-            case 39: ship.keyR = true; break;
-            case 32: ship.keyH = true; break;
-        }
-    }
-    if (50 < touchX && touchX < 150 && 650 < touchY && touchY < 850) {
-        keyCode2 = 32; ship.keyH = true;
-    }
-    console.log(touchX, touchY);
 }
 
  function alienLoop() {
@@ -579,12 +551,13 @@ function draw() {
     </script>
 </head>
 
-<h1 class="main_title">Please click here</h1>
+<!-- <h1 class="main_title">Please click here</h1> -->
 
 <body onload="init();">
     <canvas id="canvas" width="600" height="1000"></canvas>
     <img id="arrows" src="arrows.png" style="display:none;" />
     <img id="strip" src="strip.png" style="display:none;" />
+    <img id="START" src="start.png" onclick="start()"><br/>
     <audio id="shot_s" src="Shofixti-Shot.wav"></audio>
     <audio id="explode" src="GUN_SHOT.wav"></audio>
     <audio id="ufo_s" src="UFO_flay.wav"></audio>
