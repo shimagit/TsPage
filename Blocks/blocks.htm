@@ -84,14 +84,20 @@ function mymousedown(e) {
 				ball.changeDir(Math.random() * Math.PI / 2 + Math.PI / 4);  // 45 - 135
       }
     }
+		if (!isPlaying()) {
+			ball.x = paddle.x + paddle.w / 2;
+			ball.y = paddle.y - ball.r;
+			ball.changeDir(Math.random() * Math.PI / 2 + Math.PI / 4);  // 45 - 135
+			paddle.keyH = true;
+    }
     drawCircle(mouseX, mouseY, 35,"green");
 }
     
     function Block(x, y, i) {
         this.x = x;
         this.y = y;
-        this.w = 50;
-        this.h = 20;
+        this.w = 400; // 50
+        this.h = 160; // 20
         this.color = colors[i];
         this.point = (6 - i) * 10;
     }
@@ -148,7 +154,9 @@ function mymousedown(e) {
 
 		function mousePos(mouse_x) {
 			if(mouse_x != "undefined"){
-      	mouse_pos = mouse_X;
+      	paddle.x = mouse_x;
+				paddle.x = Math.max(0, paddle.x - 10);
+				paddle.x = Math.min(WIDTH - paddle.w, paddle.x + 10);
     	}
     	// let base_offset = -this.space.left;
     	//this.racket_mouse_move(e.pageX + base_offset
@@ -164,10 +172,11 @@ function mymousedown(e) {
       paddle.w = Math.max(20, paddle.w - 10);
       ball.speed = Math.min(20, ball.speed + 1);
 
-      // layout blocks
-      for (var i = 0 ; i < 10 ; i++) {
-        for (var j = 0 ; j < 17 ; j++) {
-          blocks.push(new Block(j * 51 + 17, i * 21 + 100, i));
+      // layout blocks(10 x 17)
+      for (var i = 0 ; i < 1 ; i++) {
+        for (var j = 0 ; j < 1 ; j++) {
+          blocks.push(new Block(j * 51 + 200, i * 21 + 200, i));
+          // blocks.push(new Block(j * 51 + 17, i * 21 + 100, i));
         }
       }
     }
@@ -217,11 +226,15 @@ function mymousedown(e) {
         }
 
         // hit a block?
-        var hit = -1;
+        var hit = -1, reflect = -1, rx = 0, ry = 0;
         blocks.some(function (block, i) {
             if (block.x - ball.r < nx && nx < block.x + block.w + ball.r &&
                 block.y - ball.r < ny && ny < block.y + block.h + ball.r) {
                 hit = i;
+								// rx = block.x - nx, ry = block.y - ny;
+								// if (rx <= 0 || rx > 45 || ry <= 0 || ry > 15) {
+								//	 reflect = 2;
+								//}  
                 return true;
             }
             return false;
@@ -229,14 +242,14 @@ function mymousedown(e) {
 
         if (hit >= 0) {
             score += blocks[hit].point;
-            blocks.splice(hit, 1);
+            // blocks.splice(hit, 1);
 
             if (blocks.length <= 0) { // cleared
                 ball.y = HEIGHT + ball.r;
                 start();
                 return;
             }
-            ball.changeDir(ball.dir * -1);
+          	ball.changeDir(ball.dir * -1);
         }
 
         ball.move();
