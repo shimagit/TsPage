@@ -9,6 +9,8 @@
     var balls = 3, score = 0, WIDTH = 900, HEIGHT = 900;
     var colors = ['red','orange','yellow','green','purple','blue','lightblue','white','violet','yellowgreen'];
 		var keyCode2 = 0;
+		var hitFlag = 0;
+		var bof = 0;
 
     function Ball() {
         this.x = 0;
@@ -226,17 +228,21 @@ function mymousedown(e) {
         }
 
         // hit a block?
-        var hit = -1, reflect = -1, rx = 0, ry = 0;
+        var hit = -1, reflect = 1, rx = 0, ry = 0, cx = 0, cy = 0;
         blocks.some(function (block, i) {
-            if (block.x - ball.r < nx && nx < block.x + block.w + ball.r &&
-                block.y - ball.r < ny && ny < block.y + block.h + ball.r) {
+            if (block.x - (ball.r + bof) < nx && nx < block.x + block.w + (ball.r + bof) &&
+                block.y - (ball.r + bof) < ny && ny < block.y + block.h + (ball.r + bof) &&
+								hitFlag <= 0) {
                 hit = i;
-								// rx = block.x - nx, ry = block.y - ny;
-								// if (rx <= 0 || rx > 45 || ry <= 0 || ry > 15) {
-								//	 reflect = 2;
-								//}  
+								hitFlag = 3;
+								cx = block.x, cy = block.y;
+								// rx = nx - block.x, ry = ny - block.y;
+								// if (rx <= 0 || rx > 395 || ry <= 0 || ry > 155) {
+								//	 reflect = -1;
+								// }  
                 return true;
             }
+						hitFlag -= 1 ;
             return false;
         });
 
@@ -249,7 +255,14 @@ function mymousedown(e) {
                 start();
                 return;
             }
-          	ball.changeDir(ball.dir * -1);
+          	//ball.changeDir(ball.dir * -1);
+						//if (block.x - ball.r < nx && nx < block.x + block.w + ball.r) {
+						if (cx - ball.r < nx ) {
+            		ball.changeDir(ball.dir * -1);
+        		}
+        		else {
+            		ball.changeDir(Math.PI - ball.dir);
+        		}
         }
 
         ball.move();
