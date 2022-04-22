@@ -228,14 +228,14 @@ function mymousedown(e) {
         }
 
         // hit a block?
-        var hit = -1, reflect = 1, rx = 0, ry = 0, cx = 0, cy = 0;
+        var hit = -1, reflect = 1, rx = 0, ry = 0, cx = 0, cy = 0, cw=0;
         blocks.some(function (block, i) {
             if (block.x - (ball.r + bof) < nx && nx < block.x + block.w + (ball.r + bof) &&
                 block.y - (ball.r + bof) < ny && ny < block.y + block.h + (ball.r + bof) &&
 								hitFlag <= 0) {
                 hit = i;
 								hitFlag = 3;
-								cx = block.x, cy = block.y;
+								cx = block.x, cy = block.y, cw = block.w;
 								// rx = nx - block.x, ry = ny - block.y;
 								// if (rx <= 0 || rx > 395 || ry <= 0 || ry > 155) {
 								//	 reflect = -1;
@@ -257,7 +257,7 @@ function mymousedown(e) {
             }
           	//ball.changeDir(ball.dir * -1);
 						//if (block.x - ball.r < nx && nx < block.x + block.w + ball.r) {
-						if (cx - ball.r < nx ) {
+						if (cx - (ball.r - 5) < nx && nx < cx + cw + (ball.r - 5)) {
             		ball.changeDir(ball.dir * -1);
         		}
         		else {
