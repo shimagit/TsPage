@@ -11,6 +11,7 @@
 		var keyCode2 = 0;
 		var hitFlag = 0;
 		var bof = 0;
+		var blockW = 88, blockH = 40
 
     function Ball() {
         this.x = 0;
@@ -98,8 +99,8 @@ function mymousedown(e) {
     function Block(x, y, i) {
         this.x = x;
         this.y = y;
-        this.w = 400; // 50
-        this.h = 160; // 20
+        this.w = blockW; // 50 400
+        this.h = blockH; // 20 160
         this.color = colors[i];
         this.point = (6 - i) * 10;
     }
@@ -175,10 +176,10 @@ function mymousedown(e) {
       ball.speed = Math.min(20, ball.speed + 1);
 
       // layout blocks(10 x 17)
-      for (var i = 0 ; i < 1 ; i++) {
-        for (var j = 0 ; j < 1 ; j++) {
-          blocks.push(new Block(j * 51 + 200, i * 21 + 200, i));
-          // blocks.push(new Block(j * 51 + 17, i * 21 + 100, i));
+      for (var i = 0 ; i < 10 ; i++) {
+        for (var j = 0 ; j < 10 ; j++) {
+          // blocks.push(new Block(j * 51 + 200, i * 21 + 200, i));
+          blocks.push(new Block(j * (blockW + 1) + 5, i * (blockH + 1)  + 100, i));
         }
       }
     }
@@ -235,7 +236,7 @@ function mymousedown(e) {
 								hitFlag <= 0) {
                 hit = i;
 								hitFlag = 3;
-								cx = block.x, cy = block.y, cw = block.w;
+								cx = block.x + ball.r, cy = block.y + ball.r, cw = block.w;
 								// rx = nx - block.x, ry = ny - block.y;
 								// if (rx <= 0 || rx > 395 || ry <= 0 || ry > 155) {
 								//	 reflect = -1;
@@ -248,7 +249,7 @@ function mymousedown(e) {
 
         if (hit >= 0) {
             score += blocks[hit].point;
-            // blocks.splice(hit, 1);
+            blocks.splice(hit, 1);
 
             if (blocks.length <= 0) { // cleared
                 ball.y = HEIGHT + ball.r;
@@ -257,7 +258,7 @@ function mymousedown(e) {
             }
           	//ball.changeDir(ball.dir * -1);
 						//if (block.x - ball.r < nx && nx < block.x + block.w + ball.r) {
-						if (cx - (ball.r - 5) < nx && nx < cx + cw + (ball.r - 5)) {
+						if (cx  < nx && nx < cx + cw ) {
             		ball.changeDir(ball.dir * -1);
         		}
         		else {
